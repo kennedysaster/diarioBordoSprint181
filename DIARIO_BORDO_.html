@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diário de Bordo - Sprint 181</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #a2bb40 0%, #87a235 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #a2bb40, #87a235);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="90" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .sprint-info {
+            background: linear-gradient(135deg, #f8faf5, #f0f4e8);
+            border-left: 5px solid #a2bb40;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .sprint-info h2 {
+            color: #a2bb40;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e8d0;
+        }
+
+        .info-item strong {
+            color: #a2bb40;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #a2bb40;
+            border-bottom: 3px solid #a2bb40;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        .day-entry {
+            background: #fafbf8;
+            border: 1px solid #e0e8d0;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .day-entry:hover {
+            box-shadow: 0 8px 25px rgba(162, 187, 64, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .day-header {
+            background: linear-gradient(135deg, #a2bb40, #87a235);
+            color: white;
+            padding: 15px 20px;
+            margin: -30px -30px 20px -30px;
+            border-radius: 12px 12px 0 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .activity-type {
+            display: inline-block;
+            background: #a2bb40;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            margin-right: 10px;
+        }
+
+        .activity-type.idea { background: #4CAF50; }
+        .activity-type.ux { background: #FF9800; }
+        .activity-type.ticket { background: #2196F3; }
+        .activity-type.presentation { background: #9C27B0; }
+
+        .ticket-card {
+            background: white;
+            border: 2px solid #a2bb40;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(162, 187, 64, 0.1);
+        }
+
+        .ticket-number {
+            background: #a2bb40;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .ticket-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .problem, .solution {
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .problem {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+
+        .solution {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .summary {
+            background: linear-gradient(135deg, #a2bb40, #87a235);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .summary h2 {
+            border: none;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .achievements {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .achievements ul {
+            list-style: none;
+        }
+
+        .achievements li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .achievements li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .problem-solution {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Registro de Atividades</h1>
+            <div class="subtitle">Analista de Experiência do Produto</div>
+        </div>
+
+        <div class="content">
+            <div class="sprint-info">
+                <h2>📋 INFORMAÇÕES DA SPRINT</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Sprint:</strong> 181
+                    </div>
+                    <div class="info-item">
+                        <strong>Início:</strong> Segunda-feira, 16/06/2025
+                    </div>
+                    <div class="info-item">
+                        <strong>Término:</strong> 27/06/2025
+                    </div>
+                    <div class="info-item">
+                        <strong>Tickets:</strong> 9
+                    </div>
+                </div>
+
+                <h3 style="color: #a2bb40; margin-top: 25px; margin-bottom: 15px;">Sprint Planning - 16/06/2025</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Horário:</strong> 9:00h às 11:00h (2 horas)
+                    </div>
+                    <div class="info-item">
+                        <strong>Envolvidos:</strong> Marcos, Kenedy e Thiago Teles
+                    </div>
+                    <div class="info-item">
+                        <strong>Status:</strong> Todos os tickets repassados sem observações
+                    </div>
+                    <div class="info-item">
+                        <strong>Validação:</strong> Patrocinador já havia validado previamente
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📅 REGISTRO DIÁRIO DE ATIVIDADES</h2>
+
+                <div class="day-entry">
+                    <div class="day-header">16/06/2025 (Segunda-feira) - Início da Sprint</div>
+                    
+                    <div class="activity-type idea">🔍 IDENTIFICAÇÃO DE NOVAS IDEIAS</div>
+                    
+                    <div class="ticket-card">
+                        <h4>1. Tooltip para Produtos de Combustível</h4>
+                        <p><em>Identificado com Marcos</em></p>
+                        <div class="problem-solution">
+                            <div class="problem">
+                                <strong>Problema:</strong> Na pesquisa de produto no lançamento de combustível, mostrar apenas produtos cadastrados como combustível
+                            </div>
+                            <div class="solution">
+                                <strong>Solução:</strong> Implementar tooltip informativo
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ticket-card">
+                        <h4>2. Automação de Coleção Colare</h4>
+                        <p><em>Identificado com Bruno Santos</em></p>
+                        <div class="problem-solution">
+                            <div class="problem">
+                                <strong>Problema:</strong> Ao salvar dados de aposentadoria no cadastro de funcionário
+                            </div>
+                            <div class="solution">
+                                <strong>Solução:</strong> Sistema criar automaticamente a coleção colare
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-type ux">🎨 PADRÕES/PROBLEMAS UX</div>
+                    
+                    <div class="ticket-card">
+                        <h4>Auto-abertura de Coleções</h4>
+                        <p><em>Identificado com Maurício</em></p>
+                        <div class="problem-solution">
+                            <div class="problem">
+                                <strong>Problema:</strong> Ao abrir item de coleção que não está carregado, usuário precisa clicar novamente
+                            </div>
+                            <div class="solution">
+                                <strong>Solução:</strong> Sistema abrir automaticamente a coleção para o usuário
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="day-entry">
+                    <div class="day-header">17/06/2025 (Terça-feira)</div>
+                    
+                    <div class="activity-type idea">🔍 IDENTIFICAÇÃO DE NOVAS IDEIAS</div>
+                    <p><strong>Acompanhamento com Suporte - Analista Marcos</strong></p>
+                    <p><strong>Foco:</strong> Módulo Frotas</p>
+                    <p><strong>Problema Identificado:</strong> Clientes se confundem na tela FR016 ao lançar combustível, tentando inserir dados de manutenção (ex: óleo de troca)</p>
+
+                    <div class="activity-type ticket">💡 TICKET CRIADO</div>
+                    
+                    <div class="ticket-card">
+                        <div class="ticket-number">#491772</div>
+                        <div class="ticket-title">FR - VALIDAÇÃO DO CAMPO PRODUTO NO LANÇAMENTO DE COMBUSTÍVEL</div>
+                        <p><strong>Descrição:</strong> Implementar ícone de informação (tooltip) ao lado do campo PRODUTO</p>
+                        <p><strong>Tela:</strong> FR016 - LANÇAMENTO DE COMBUSTÍVEL</p>
+                        <p><strong>Objetivo:</strong> Mostrar ao cliente que tipo de produtos deve ser lançado nesta tela</p>
+                    </div>
+                </div>
+
+                <div class="day-entry">
+                    <div class="day-header">18/06/2025 (Quarta-feira)</div>
+                    
+                    <div class="activity-type idea">🔍 IDENTIFICAÇÃO DE NOVAS IDEIAS</div>
+                    <p><strong>Acompanhamento com Suporte - Ideia de Tatiele repassada por Marcos</strong></p>
+
+                    <div class="activity-type ticket">💡 TICKET CRIADO</div>
+                    
+                    <div class="ticket-card">
+                        <div class="ticket-number">#492268</div>
+                        <div class="ticket-title">FP - FICHA FINANCEIRA - Pesquisa de Apontamentos</div>
+                        <div class="problem-solution">
+                            <div class="problem">
+                                <strong>Problema:</strong> Pesquisa Ctrl+F limitada apenas aos textos visíveis em tela
+                            </div>
+                            <div class="solution">
+                                <strong>Detalhes:</strong>
+                                <ul>
+                                    <li>Coluna APONTAMENTOS>CHAVE lista por ordem alfabética</li>
+                                    <li>Visualização limitada até chaves iniciadas com letra "B"</li>
+                                    <li>Chaves abaixo não são pesquisáveis mesmo usando Ctrl+F</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p><strong>Impacto:</strong> Usuários não conseguem localizar chaves específicas que não estão visíveis na tela</p>
+                    </div>
+                </div>
+
+                <div class="day-entry">
+                    <div class="day-header">19/06/2025 (Quinta-feira)</div>
+                    
+                    <div class="activity-type idea">🔍 IDENTIFICAÇÃO DE NOVAS IDEIAS</div>
+                    <p><strong>Observação de Campo - Mesa da Contabilidade (Bianca)</strong></p>
+                    <p><strong>Equipes Observadas:</strong> Compras, Contabilidade, Arrecadação</p>
+                    <p><strong>Resultado:</strong> Nenhuma ideia extraída diretamente</p>
+
+                    <div class="ticket-card">
+                        <h4>Sugestão Identificada:</h4>
+                        <p><strong>Contexto:</strong> Conversa entre Marcos e Ana (Compras)</p>
+                        <p><strong>Tema:</strong> Contrato modalidade "Outros"</p>
+                        <div class="problem-solution">
+                            <div class="problem">
+                                <strong>Problema:</strong> Contrato não vinculado a empenho não precisa enviar ao Colare
+                            </div>
+                            <div class="solution">
+                                <strong>Sugestão:</strong> Validação para apresentar mais claramente os impactos deste tipo de contrato
+                            </div>
+                        </div>
+                        <p><strong>Status:</strong> Equipe decidiu aguardar atendimento ao cliente para discussão posterior</p>
+                    </div>
+                </div>
+
+                <div class="day-entry">
+                    <div class="day-header">20/06/2025 (Sexta-feira)</div>
+                    
+                    <div class="activity-type idea">🔍 GERAÇÃO DE NOVAS IDEIAS</div>
+                    
+                    <div class="ticket-card">
+                        <h4>Melhoria na Tela de Login</h4>
+                        <p><em>Apresentado às 16:30h</em></p>
+                        <p><strong>Problema Atual:</strong> Mensagem "Usuário inválido/bloqueado"</p>
+                        <p><strong>Nova Mensagem:</strong> "Usuário ou Senha inválido, verifique os dados informados e tente novamente!"</p>
+                        <p><strong>Contexto:</strong> Quando usuário ou senha não conferem com dados cadastrados</p>
+                    </div>
+
+                    <div class="activity-type presentation">👥 APRESENTAÇÃO PARA EQUIPES</div>
+                    
+                    <div class="ticket-card">
+                        <p><strong>Público:</strong> Equipe de COMPRAS e CONTABILIDADE (Suporte N1)</p>
+                        <p><strong>Objetivo:</strong> Marcos explicou o trabalho do cargo ANALISTA DE EXPERIÊNCIA DO PRODUTO</p>
+                        <p><strong>Mensagem Principal:</strong> Qualquer ideia que surgir deve ser compartilhada com Marcos para análise e transformação em melhorias</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary">
+                <h2>📊 RESUMO DA SEMANA</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">6</span>
+                        <span class="stat-label">🎯 Ideias Identificadas</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">2</span>
+                        <span class="stat-label">🎫 Tickets Criados</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">1</span>
+                        <span class="stat-label">👥 Apresentações Realizadas</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">6</span>
+                        <span class="stat-label">🔍 Colaboradores Envolvidos</span>
+                    </div>
+                </div>
+
+                <div class="achievements">
+                    <h3>📈 Principais Conquistas:</h3>
+                    <ul>
+                        <li>Identificação de problema crítico no módulo Frotas</li>
+                        <li>Criação de melhorias para pesquisa em ficha financeira</li>
+                        <li>Estabelecimento de canal de comunicação com equipes de suporte</li>
+                        <li>Apresentação do papel do Analista de Experiência do Produto</li>
+                    </ul>
+                </div>
+
+                <p style="text-align: center; margin-top: 30px; opacity: 0.9;">
+                    <strong>Última atualização:</strong> 20/06/2025
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
